@@ -1,6 +1,6 @@
 import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Text } from 'src/ui/text';
 import { Select } from 'src/ui/select';
 import {
@@ -17,38 +17,63 @@ import styles from './ArticleParamsForm.module.scss';
 
 interface ArticleParamsFormProps {
 	articleState: ArticleStateType;
-	onFontFamilyChange: (
-		fontFamily: ArticleStateType['fontFamilyOption']
-	) => void;
-	onFontSizeChange: (fontSize: ArticleStateType['fontSizeOption']) => void;
-	onFontColorChange: (fontColor: ArticleStateType['fontColor']) => void;
-	onBackgroundColorChange: (
-		backgroundColor: ArticleStateType['backgroundColor']
-	) => void;
-	onContentWidthChange: (
-		contentWidth: ArticleStateType['contentWidth']
-	) => void;
+	onApply: (articleState: ArticleStateType) => void;
 	onReset: () => void;
 }
 
 export const ArticleParamsForm = ({
 	articleState,
-	onFontFamilyChange,
-	onFontSizeChange,
-	onFontColorChange,
-	onBackgroundColorChange,
-	onContentWidthChange,
+	onApply,
 	onReset,
 }: ArticleParamsFormProps) => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+	const [formState, setFormState] = useState(articleState);
 
-	function handleButton() {
+	useEffect(() => setFormState(articleState), [articleState]);
+
+	const onFontFamilyChange = (
+		fontFamily: ArticleStateType['fontFamilyOption']
+	) => {
+		setFormState((prev) => ({ ...prev, fontFamilyOption: fontFamily }));
+	};
+
+	const onFontSizeChange = (fontSize: ArticleStateType['fontSizeOption']) => {
+		setFormState((prev) => ({ ...prev, fontSizeOption: fontSize }));
+	};
+
+	const onFontColorChange = (fontColor: ArticleStateType['fontColor']) => {
+		setFormState((prev) => ({ ...prev, fontColor: fontColor }));
+	};
+
+	const onBackgroundColorChange = (
+		backgroundColor: ArticleStateType['backgroundColor']
+	) => {
+		setFormState((prev) => ({ ...prev, backgroundColor: backgroundColor }));
+	};
+
+	const onContentWidthChange = (
+		contentWidth: ArticleStateType['contentWidth']
+	) => {
+		setFormState((prev) => ({ ...prev, contentWidth: contentWidth }));
+	};
+
+	const handleButton = () => {
 		setIsSidebarOpen(!isSidebarOpen);
-	}
+	};
 
-	function handleOverlayClick() {
+	const handleOverlayClick = () => {
 		setIsSidebarOpen(false);
-	}
+	};
+
+	const handleSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		onApply(formState);
+	};
+
+	const handleResetClick = () => {
+		setFormState(articleState);
+		onReset();
+	};
 
 	return (
 		<>
@@ -64,14 +89,14 @@ export const ArticleParamsForm = ({
 				className={`${styles.container} ${
 					isSidebarOpen ? styles.container_open : styles.container_close
 				}`}>
-				<form className={styles.form}>
+				<form className={styles.form} onSubmit={handleSubmit}>
 					<div className={styles.formSection}>
 						<Text size={31} weight={800} uppercase={true}>
 							Задайте параметры
 						</Text>
 						<div className={styles.fieldGroup}>
 							<Select
-								selected={articleState.fontFamilyOption}
+								selected={formState.fontFamilyOption}
 								options={fontFamilyOptions}
 								onChange={onFontFamilyChange}
 								placeholder='Выберите шрифт'
@@ -83,7 +108,7 @@ export const ArticleParamsForm = ({
 							<RadioGroup
 								name='fontSize'
 								options={fontSizeOptions}
-								selected={articleState.fontSizeOption}
+								selected={formState.fontSizeOption}
 								onChange={onFontSizeChange}
 								title='Размер шрифта'
 							/>
@@ -91,7 +116,7 @@ export const ArticleParamsForm = ({
 
 						<div className={styles.fieldGroup}>
 							<Select
-								selected={articleState.fontColor}
+								selected={formState.fontColor}
 								options={fontColors}
 								onChange={onFontColorChange}
 								placeholder='Выберите цвет шрифта'
@@ -105,7 +130,7 @@ export const ArticleParamsForm = ({
 
 						<div className={styles.fieldGroup}>
 							<Select
-								selected={articleState.backgroundColor}
+								selected={formState.backgroundColor}
 								options={backgroundColors}
 								onChange={onBackgroundColorChange}
 								placeholder='Выберите цвет фона'
@@ -115,7 +140,7 @@ export const ArticleParamsForm = ({
 
 						<div className={styles.fieldGroup}>
 							<Select
-								selected={articleState.contentWidth}
+								selected={formState.contentWidth}
 								options={contentWidthArr}
 								onChange={onContentWidthChange}
 								placeholder='Выберите ширину контента'
@@ -128,7 +153,7 @@ export const ArticleParamsForm = ({
 							title='Сбросить'
 							htmlType='reset'
 							type='clear'
-							onClick={onReset}
+							onClick={handleResetClick}
 						/>
 						<Button title='Применить' htmlType='submit' type='apply' />
 					</div>

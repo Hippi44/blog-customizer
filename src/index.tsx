@@ -19,37 +19,14 @@ const App = () => {
 	const [articleState, setArticleState] =
 		useState<ArticleStateType>(defaultArticleState);
 
-	const updateFontFamily = (
-		fontFamily: typeof defaultArticleState.fontFamilyOption
-	) => {
-		setArticleState((prev) => ({ ...prev, fontFamilyOption: fontFamily }));
-	};
-
-	const updateFontSize = (
-		fontSize: typeof defaultArticleState.fontSizeOption
-	) => {
-		setArticleState((prev) => ({ ...prev, fontSizeOption: fontSize }));
-	};
-
-	const updateFontColor = (fontColor: typeof defaultArticleState.fontColor) => {
-		setArticleState((prev) => ({ ...prev, fontColor: fontColor }));
-	};
-
-	const updateBackgroundColor = (
-		backgroundColor: typeof defaultArticleState.backgroundColor
-	) => {
-		setArticleState((prev) => ({ ...prev, backgroundColor: backgroundColor }));
-	};
-
-	const updateContentWidth = (
-		contentWidth: typeof defaultArticleState.contentWidth
-	) => {
-		setArticleState((prev) => ({ ...prev, contentWidth: contentWidth }));
-	};
-
-	const resetToDefaults = () => {
+	const handleReset = () => {
 		setArticleState(defaultArticleState);
 	};
+
+	const handleApply = (nextState: ArticleStateType) => {
+		setArticleState(nextState);
+	};
+
 	return (
 		<main
 			className={clsx(styles.main)}
@@ -64,12 +41,8 @@ const App = () => {
 			}>
 			<ArticleParamsForm
 				articleState={articleState}
-				onFontFamilyChange={updateFontFamily}
-				onFontSizeChange={updateFontSize}
-				onFontColorChange={updateFontColor}
-				onBackgroundColorChange={updateBackgroundColor}
-				onContentWidthChange={updateContentWidth}
-				onReset={resetToDefaults}
+				onReset={handleReset}
+				onApply={handleApply}
 			/>
 			<Article />
 		</main>
