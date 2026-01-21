@@ -13,6 +13,8 @@ import {
 } from 'src/constants/articleProps';
 import { RadioGroup } from 'src/ui/radio-group';
 import { Separator } from 'src/ui/separator';
+
+import clsx from 'clsx';
 import styles from './ArticleParamsForm.module.scss';
 
 interface ArticleParamsFormProps {
@@ -86,9 +88,10 @@ export const ArticleParamsForm = ({
 				/>
 			)}
 			<aside
-				className={`${styles.container} ${
+				className={clsx(
+					styles.container,
 					isSidebarOpen ? styles.container_open : styles.container_close
-				}`}>
+				)}>
 				<form className={styles.form} onSubmit={handleSubmit}>
 					<div className={styles.formSection}>
 						<Text size={31} weight={800} uppercase={true}>
